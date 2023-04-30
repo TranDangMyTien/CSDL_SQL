@@ -1,13 +1,11 @@
 ﻿create database BatDongSan;
-
+use BatDongSan;
 create table VanPhong
 (
 	MaVP varchar(5) PRIMARY KEY,
 	DiaDiem nvarchar(30) NOT NULL,
 );
 
-alter table VanPhong 
-	alter column DiaDiem nvarchar(30) NOT NULL
 
 create table NhanVien 
 (
@@ -38,13 +36,15 @@ create table BatDongSan
 	MaVP varchar(5) NOT NULL REFERENCES VanPhong(MaVP),
 	MaChuSoHuu varchar(5) NOT NULL REFERENCES ChuSoHuu(MaChuSoHuu),
 );
-
+-- Tạo ràng buộc UNIQUE cho thuộc tính SoDienThien trong quan hệ ChuSoHuu
 alter table ChuSoHuu add constraint uniqueSDT unique(SoDienThoai);
-
+-- Tạo ràng buộc cho thuộc tính MoiQuanHe chỉ nhận 3 giá trị: Vợ, chồng, con/cái.
 alter table ThanNhan add constraint checkMoiQuanHe check ( MoiQuanHe IN ('Vợ', 'Chồng', 'Con'));
-
+-- Tạo ràng buộc DEFAULT cho thuộc tính MoiQuanHe là NguoiPhuThuoc.
 alter table ThanNhan add constraint defaultMQH default 'NguoiPhuThuoc' for MoiQuanHe;
 
+alter table VanPhong alter column DiaDiem nvarchar(30) NOT NULL
+--NHẬP DỮ LIỆU CHO CÁC BẢNG (ÍT NHẤT 5 DÒNG) 
 INSERT INTO VANPHONG(MaVP, DiaDiem) VALUES
 ('VP01', 'Bình Định'),
 ('VP02', 'Bắc Giang'),
@@ -81,4 +81,3 @@ INSERT INTO BatDongSan(MaBDS, DiaChi, MaVP, MaChuSoHuu) VALUES
 ('BDS05', 'Quy Nhơn', 'VP05', 'SH05')
 
 
-SELECT * FROM BatDongSan

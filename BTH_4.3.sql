@@ -1,5 +1,5 @@
-create database QuanLyBanHang;
-
+﻿create database QuanLyBanHang;
+use QuanLyBanHang; 
 create table KhachHang 
 (
 	MaKH char(10) primary key,
@@ -36,45 +36,43 @@ create table HoaDon
 	MaNV Char(10),
 	TriGia Decimal(8,2),
 
-	foreign key (MaKH) references KhachHang (MaKH),
-	foreign key (MaNV) references NhanVien (MaNV)
+	foreign key (MaKH) references KhachHang (MaKH), -- Khóa ngoại 
+	foreign key (MaNV) references NhanVien (MaNV) --Dòng cuối không cần có dấu "," 
 );
 
 create table CTHD 
 (
-	SoHD Char(10),
+	SoHD Char(10), --Thắc mắc cách tạo khóa chính từ 3 thuộc tính như bài TH4.1 
 	MaSP Char(10),
 	SoLuong Int,
 
 	foreign key (MaSP) references SanPham (MaSP),
 	foreign key (SoHD) references HoaDon (SoHD)
 );
-
+--Thêm vào thuộc tính GHICHU có kiểu dữ liệu varchar(20) cho quan hệ SANPHAM
 Alter table SanPham Add GhiChu varchar(20);
-
+--Thêm vào thuộc tính LOAIKH có kiểu dữ liệu là tinyint cho quan hệ KHACHHANG.
 Alter table KhachHang Add LoaiKH tinyInt;
-
+--Sửa kiểu dữ liệu của thuộc tính LOAIKH trong quan hệ KHACHHANG thành varchar(30).
 Alter table KhachHang Alter Column LoaiKH varchar(30);
-
+--Sửa kiểu dữ liệu của thuộc tính GHICHU trong quan hệ SANPHAM thành varchar(100).
 Alter table SanPham Alter Column GhiChu varchar(100);
-
+--Xóa thuộc tính GHICHU trong quan hệ SANPHAM
 Alter table SanPham Drop Column GhiChu;
-
+--Làm thế nào để thuộc tính LOAIKH trong quan hệ KHACHHANG có các giá trị là: Thân thiết, Khách lẻ, Công ty
 Alter table KhachHang Add Constraint loaiKH Check(LoaiKH in('ThanThiet','KhachLe','CongTy'));
-
+--Đơn vị tính của sản phẩm là những giá trị: chai, thùng, lon, lốc
 Alter table SanPham Add Constraint donvi Check(DonVi in('Chai','Thung','Lon','Loc'));
-
+--Mỗi lần mua hàng, khách hàng phải mua ít nhất 1 sản phẩm.
 Alter table CTHD Add Constraint soluong Check(SoLuong > 1);
-
+--Ngày khách hàng đăng ký là khách hàng thành viên phải lớn hơn ngày sinh của người đó.
 Alter table KhachHang Add Constraint ngaydk Check(NgayDK > NgaySinh);
-
+--Giá trị mặc định của các sản phẩm là 100.000.
 Alter table SanPham Add Constraint df_gia Default 100000 for Gia;
-
+--Ngày Hóa đơn trong quan hệ HOADON phải là ngày trước ngày hiện tại.
 Alter table HoaDon Add Constraint ngayHD Check(NgayMua < GetDate());
-
-
+--Nước sản xuất trong quan hệ SANPHAM là: Phap, My, Canada. Nếu giá trị nàykhông nhập thì nước sản xuất là VietNam
 Alter table SanPham Add Constraint nuoc_SX Check(NuocSX in('Phap','My','Canada','VietNam'));
-
 Alter table SanPham Add Constraint df_nuocsx Default 'VietNam' for NuocSX;
 
 
